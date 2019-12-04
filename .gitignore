@@ -1,2 +1,3 @@
 credentials/*
 !credentials/.keep
+.Rproj.user
