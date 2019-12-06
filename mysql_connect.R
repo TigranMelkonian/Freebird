@@ -14,19 +14,20 @@ selectedDB <- dbGetQuery(conn,"SELECT DATABASE()")
 print(paste("You are connected to the Schema: ",selectedDB))
 
 
-#Expects: Data to save in DB and a DB table_name that already exists in local DB
-#DOes: If table exists, then inserts data to existing table. Otherwise creates a table and inserts into it
+#Expects: Data frameto push to DB and a DB table_name that already exists in local DB
+#DOes: Inserts data to existing table one row at a time
 #Returns: NA
-save_data_to_db <- function(db = conn, data, table_name) {
- 
+update_db_table <- function(db = conn, data, table_name) {
+  
+ for (i in 1:nrow(data)){
   # Construct the update query by looping over the data fields
-  query <- sprintf(
-    "INSERT INTO %s (%s) VALUES ('%s')",
-    table_name, 
-    paste(names(data), collapse = ", "),
-    paste(data, collapse = "', '")
-  )
-  # Submit the update query and disconnect
+    query <- sprintf(
+      "INSERT INTO %s (%s) VALUES ('%s');",
+      table_name, 
+      paste(colnames(data), collapse = ", "),
+      apply(data[i,], 1, paste, collapse="', '")
+    )
+  # Submit the update query
   dbGetQuery(conn, query)
+ }
 }
-
