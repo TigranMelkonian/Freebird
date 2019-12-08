@@ -1,3 +1,4 @@
 credentials/*
 !credentials/.keep
 .Rproj.user
+.httr-oauth
