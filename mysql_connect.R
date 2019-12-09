@@ -1,22 +1,28 @@
 # File to connect to local SQL Server
+
+
 # Create an ephemeral in-memory RSQLite database
 # & Connect to local MYSQLite DB 'rshinyappdata'
-
 conn <- dbConnect(SQLite(), ":memory:")
 
-# Connect to local MYSQLite DB 'rshinyappdata'
-dbSendStatement(conn, paste0("create table tokenizedurl (
-            tokenizedurlid integer primary key autoincrement,
-            original_url varchar(255),
-            tokenized_url varchar(255),
-            created_date datetime);"))
 
+# Connect to local MYSQLite DB 'rshinyappdata'
+table_exists <- tryCatch({dbGetQuery(conn, "select 1 from tokenizedurl limit 1;")}, error = function(cond) {return(FALSE)})
+if (table_exists != FALSE){
+  next #R's version of continue
+}else{
+  dbSendStatement(conn, paste0("create table tokenizedurl (
+            tokenizedurlid integer primary key autoincrement,
+                               original_url varchar(255),
+                               tokenized_url varchar(255),
+                               created_date datetime);"))
+}
 
 # Expects: Data frame to push to DB and a DB table_name that already exists in SQLite DB 
 #          and a MYSQLite conn
 # Does: Inserts data to existing table one row at a time
 # Returns: NA
-insert_to_db_table <- function(db = conn, data, table_name) {
+insert_to_db_table <- function(db = conn, data, table_name = 'tokenizedurl') {
   for (i in 1:nrow(data)) {
     # Construct the update query by looping over the data fields
     query <- sprintf(
