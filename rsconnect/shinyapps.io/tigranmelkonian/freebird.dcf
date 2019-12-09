@@ -5,6 +5,6 @@ account: tigranmelkonian
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 1578589
-bundleId: 2651641
+bundleId: 2651720
 url: https://tigranmelkonian.shinyapps.io/freebird/
-when: 1575870298.38694
+when: 1575873030.61295

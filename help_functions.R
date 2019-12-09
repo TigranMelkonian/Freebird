@@ -2,6 +2,7 @@ library(DT)
 library(DBI)
 library(httr)
 library(shiny)
+library(dplyr)
 library(RSQLite)
 library(devtools)
 library(shinyWidgets)
@@ -9,9 +10,10 @@ library(shinydashboard)
 CREDENTIALS_PATH <- paste0(getwd(), "/credentials/")
 bitly_access_token <- read.csv(paste0(CREDENTIALS_PATH, "bitly_access_token.csv"), stringsAsFactors = F)
 source("mysql_connect.R")
+source("global.R")
+
+
 #web app help function file
-
-
 # Expects: bitly API authorization key & secret key
 # Does: Establish authentication for accessing bitly API
 #       & caches oauth access token in sys enviroment
@@ -30,6 +32,7 @@ url_shortner_auth <- function(key, secret, method = "bitly") {
   else {
     stop("Method '", method, "' not yet implemented!")
   }
+  
   assign("oauth_token", oauth_token, envir = oauth_cache)
 }
 

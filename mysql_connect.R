@@ -26,7 +26,7 @@ insert_to_db_table <- function(db = conn, data, table_name) {
       apply(data[i, ], 1, paste, collapse = '", "')
     )
     # Submit the update query
-    dbSendStatement(db, query)
+    dbGetQuery(db, query)
   }
 }
 
@@ -36,7 +36,7 @@ insert_to_db_table <- function(db = conn, data, table_name) {
 # Returns: Boolean value determining the existence of user input original url in MYSQLite DB
 url_exists_db <- function(db = conn, original_url) {
   query <- paste0("select tokenizedurlid from tokenizedurl where original_url = ", '"', original_url, '";')
-  tokenizedurlid <- dbSendStatement(db, query)
+  tokenizedurlid <- dbGetQuery(db, query)
 
   if (!is.na(tokenizedurlid$tokenizedurlid[1])) {
     return(TRUE)
@@ -51,7 +51,7 @@ url_exists_db <- function(db = conn, original_url) {
 # Returns: String of matched shortned url
 get_tokenized_url <- function(db = conn, original_url) {
   query <- paste0("select tokenized_url from tokenizedurl where original_url = ", '"', original_url, '";')
-  tokenizedurl <- as.character(dbSendStatement(db, query))
+  tokenizedurl <- as.character(dbGetQuery(db, query))
   return(tokenizedurl)
 }
 
@@ -61,6 +61,6 @@ get_tokenized_url <- function(db = conn, original_url) {
 # Returns: Entire 'tokenizedurl' data table including original_url, tokenized_url, and created_date
 get_tokenized_url_table <- function(db = conn) {
   query <- paste0("select original_url, tokenized_url, created_date from tokenizedurl")
-  tokenizedurltable <- data.frame(dbSendStatement(db, query))
+  tokenizedurltable <- data.frame(dbGetQuery(conn, query))
   return(tokenizedurltable)
 }
