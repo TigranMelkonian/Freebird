@@ -1,18 +1,9 @@
 # Server
-library(rsconnect)
-library(shiny)
-library(shinydashboard)
-library(shinyWidgets)
-library(devtools)
-library(httr)
-library(urlshorteneR)
-library(DT)
-source("help_functions.R")
-source("mysql_connect.R")
 
 server <- function(input, output, session) {
   
   
+  #Shortned url output infobox
   output$iboxtokenizedurl <- renderInfoBox({
     if (tokenized_url() == "Example URL: http://bit.ly/38gMBMq" | tokenized_url() == "Please enter a valid URL!") {
       infoBox(
@@ -28,6 +19,7 @@ server <- function(input, output, session) {
   })
 
   
+  #Community links DF output
   output$comunitylinksoutputdf <- renderDataTable({
     datatable(community_tokenized_urls(),
       options = list(
@@ -37,31 +29,40 @@ server <- function(input, output, session) {
       )
     )
   })
+
   
-  
+  #Community links DF download handler
   output$downloadcommunitylinks <- downloadHandler(
     filename = function() {
       paste0("community_links_", Sys.Date(), ".csv")
     },
     content = function(file) {
       data <- (community_tokenized_urls() %>%
-                 select("created_date", "original_url", "tokenized_url") %>%
-                 arrange(desc(created_date)))
-      
+        select("created_date", "original_url", "tokenized_url") %>%
+        arrange(desc(created_date)))
+
       write.csv(data,
-                file,
-                row.names = F
+        file,
+        row.names = F
       )
     }
   )
   
-
+  #################################################################################################
+  #                                       REACTIVE DATA UPDATE ELEMENTS                          #
+  ###############################################################################################
+  
+  # Reactive expressions are smarter than regular R functions.
+  # They cache their values and know when their values have become outdated.
+  
+  #Community links DF
   community_tokenized_urls <- eventReactive(input$datarefreshbtn, {
     tokenized_url_table <- get_tokenized_url_table()
     return(tokenized_url_table)
   }, ignoreNULL = FALSE)
- 
-  
+
+
+  #Shortened URL infobox output
   tokenized_url <- eventReactive({
     input$tokenizeactionbtn
   }, {

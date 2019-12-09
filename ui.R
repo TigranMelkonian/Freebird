@@ -1,4 +1,5 @@
-
+# ui
+source("help_functions.R")
 ui <-
   dashboardPage(
     skin = "black",
@@ -18,37 +19,55 @@ ui <-
       #                                       Main Dashbaord Body                                    #
       ###############################################################################################
       tabItems(
+        
+        ############
+        # Home tab#
+        ##########
+        
         tabItem(
           "home",
           fluidRow(
+            #usr URL input text box
             column(
               width = 6, align = "center",
               textInput("urltotokenize", "Insert URL to tokenize", " ")
             ),
+            #usr URL input action btn
             column(
               width = 3, align = "center", style = ("padding-top: 25px;"),
               actionButton("tokenizeactionbtn", "Tokenize")
             )
           ),
+          #Shortned url output info box
           fluidRow(
             column(
-              12, infoBoxOutput("iboxtokenizedurl", width = 7),
+              width = 12, infoBoxOutput("iboxtokenizedurl", width = 7),
               offset = 1, style = ("padding-top: 25px; padding-bottom: 25px")
             )
           )
         ),
+        
+        #########################
+        # community link DF tab#
+        #######################
+        
         tabItem(
           "communitylinks",
           fluidRow(
+            #Community links DF
             column(
-              8,
+              width = 8,
               align = "center",
               dataTableOutput("comunitylinksoutputdf")
-            ), 
+            ),
+            #Community links DF download btn
             column(
-              2, downloadButton("downloadcommunitylinks", "Download")),
+              width = 2, downloadButton("downloadcommunitylinks", "Download")
+            ),
+            #Community links DF refresh btn
             column(
-              2, actionButton("datarefreshbtn", "Refresh", icon = icon("redo", lib = "font-awesome", "fa-1x")))
+              width = 2, actionButton("datarefreshbtn", "Refresh", icon = icon("redo", lib = "font-awesome", "fa-1x"))
+            )
           )
         )
       )
