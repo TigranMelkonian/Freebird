@@ -2,3 +2,5 @@ credentials/*
 !credentials/.keep
 .Rproj.user
 .httr-oauth
+.RData
+.Rhistory
