@@ -37,7 +37,6 @@ server <- function(input, output, session) {
       paste0("community_links_", Sys.Date(), ".csv")
     },
     content = function(file) {
-      browser()
       data <- (community_tokenized_urls() %>%
         select("created_date", "original_url", "tokenized_url") %>%
         arrange(desc(created_date)))

@@ -1,22 +1,18 @@
 # File to connect to local SQL Server
 
 
-# Create an ephemeral in-memory RSQLite database
-# & Connect to local MYSQLite DB 'rshinyappdata'
-conn <- dbConnect(SQLite(), ":memory:")
+# Create MYSQL database
+# & Connect to aws MYSQL instance DB 'rshinyanalytics'
 
 
-# Connect to local MYSQLite DB 'rshinyappdata'
-table_exists <- tryCatch({dbGetQuery(conn, "select 1 from tokenizedurl limit 1;")}, error = function(cond) {return(FALSE)})
-if (table_exists != FALSE){
-  next #R's version of continue
-}else{
-  dbSendStatement(conn, paste0("create table tokenizedurl (
-            tokenizedurlid integer primary key autoincrement,
-                               original_url varchar(255),
-                               tokenized_url varchar(255),
-                               created_date datetime);"))
-}
+#Connect to MYSQL instance DB
+#Connect to aws hosted instance MYSQLite DB 'rshinyanalytics'
+conn <- dbConnect(MySQL(), user = mysql_credentials$user, password = mysql_credentials$password, host = mysql_credentials$host, port = 3306, dbname = mysql_credentials$dbname)
+
+#Checking the schema you are connected to
+selectedDB <- dbGetQuery(conn,"SELECT DATABASE()")
+print(paste("You are connected to the Schema: ",selectedDB))
+
 
 # Expects: Data frame to push to DB and a DB table_name that already exists in SQLite DB 
 #          and a MYSQLite conn
